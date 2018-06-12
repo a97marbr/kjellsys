@@ -90,10 +90,7 @@ if (strcmp($opt, "DELFILE") === 0) {
 
 $entries = array();
 
-$query = $pdo->prepare("SELECT * FROM sw ;");
-/*$query->bindParam(':cid', $cid);
-$query->bindParam(':vers', $coursevers);
-*/
+$query = $pdo->prepare("SELECT * FROM sw;");
 if (!$query->execute()) {
     $error = $query->errorInfo();
     $debug = "Error reading files " . $error[2];
@@ -104,8 +101,24 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
   $swid = $row['id'];
   $swname = $row['name'];
 
+  $iquery = $pdo->prepare("SELECT * FROM swvers WHERE swid=:swid;");
+  $iquery->bindParam(':swid', $swid);
+  if (!$iquery->execute()) {
+      $error = $iquery->errorInfo();
+      $debug = "Error reading files " . $error[2];
+  }
+  $versentries=array();
+  foreach ($iquery->fetchAll(PDO::FETCH_ASSOC) as $irow) {
+        $ientry=array(
+            'versname'=>$irow['name'],
+            'versid'=>$irow['id']
+        );
+        array_push($versentries, $ientry);
+  }
+
   $entry = array(
-      'swname' => $swname
+      'swname' => $swname,
+      'allversions' => json_encode($versentries)
   );
 
   array_push($entries, $entry);
