@@ -1,2 +1,2 @@
 # kjellSYS
-Record keeping of software versions deployed at a organisation
+Record keeping of software versions deployed at an organisation
